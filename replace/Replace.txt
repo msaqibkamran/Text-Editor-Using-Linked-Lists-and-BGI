@@ -1,0 +1,251 @@
+void Ctr_F(node*& head1, node*& tail1, int& toFindSize, int& wid)
+{
+	node* pointer1 = nullptr;
+	int wid1 = initwindow(400, 300, "What do you want to find?");
+	setcurrentwindow(wid1);
+	char toFind[2] = { NULL };
+	while (true)
+	{
+		toFind[0] = getch();
+		clearviewport();
+		if (toFind[0] == 8)
+			remove_from_list(head1, tail1, pointer1);
+		else if (toFind[0] == 0)
+		{
+			toFind[0] = getch();
+			if (toFind[0] == 75)	// (arrow left)
+			{
+				if (pointer1->pre != nullptr)
+					pointer1 = pointer1->pre;
+			}
+			else if (toFind[0] == 77)	// (arrow right)
+			{
+				if (pointer1->next != nullptr)
+					pointer1 = pointer1->next;
+			}
+		}
+		else if (toFind[0] == 13)
+		{
+			closegraph(CURRENT_WINDOW);
+			setcurrentwindow(wid);
+			break;
+		}
+		else
+		{
+			add_to_list(head1, tail1, pointer1, toFind[0]);
+			toFindSize++;
+		}
+		print_list(head1, tail1, pointer1);
+	}
+}
+
+int find_data(node*& head, node*& tail, node*& head1, node*& tail1,node**& addresses,int toFindSize,int wid)
+{
+	bool flag = true;
+	int dataSize = 0, count = 0;
+	node* curr = head;
+	while (curr != nullptr)
+	{
+		dataSize++;
+		curr = curr->next;
+	}
+	curr = head;
+	for (int i = 0; i <= dataSize - toFindSize; i++, curr = curr->next)
+	{
+		flag = true;
+		node* curr1 = nullptr, *curr2 = nullptr;
+		for (curr1 = curr, curr2 = head1; curr2 != nullptr && flag == true; curr1 = curr1->next, curr2 = curr2->next)
+		{
+			if (curr1->data != curr2->data)
+				flag = false;
+		}
+		if (flag == true)
+			count++;
+	}
+	if (count != 0)
+	{
+		int index = 0;
+		bool flag1 = true;
+		addresses = new node*[count];
+		curr = head;
+		for (int i = 0; i <= dataSize - toFindSize; i++)
+		{
+			flag1 = true;
+			node* curr1 = nullptr, *curr2 = nullptr;
+			for (curr1 = curr, curr2 = head1; curr2 != nullptr && flag1 == true; curr1 = curr1->next, curr2 = curr2->next)
+			{
+				if (curr1->data != curr2->data)
+					flag1 = false;
+			}
+			if (flag1 == true)
+			{
+				addresses[index] = curr;
+				index++;
+			}
+			curr = curr->next;
+		}
+		
+	}
+
+	int wid1=initwindow(300, 200, "Attention!!");
+	setcurrentwindow(wid1);
+	if (count != 0)
+	{
+		bgiout << "Given pattren found." << endl << "Press any key to go back to Text Editor";
+		outstreamxy(0, 0);
+		getch();
+		closegraph(CURRENT_WINDOW);
+		setcurrentwindow(wid);
+	}
+	else
+	{
+		bgiout << "Given data not found." << endl << "Press any key to go back to Text Editor.";
+		outstreamxy(0, 0);
+		getch();
+		closegraph(CURRENT_WINDOW);
+		setcurrentwindow(wid);
+	}
+	return count;
+}
+
+void Ctr_R(node*& head2, node*& tail2, int& wid,node**& addresses)
+{
+	if (addresses != nullptr)
+	{
+		node* pointer2 = nullptr;
+		int wid1 = initwindow(400, 300, "What do you want to replace with?");
+		setcurrentwindow(wid1);
+		char toFind[2] = { NULL };
+		while (true)
+		{
+			toFind[0] = getch();
+			clearviewport();
+			if (toFind[0] == 8)
+				remove_from_list(head2, tail2, pointer2);
+			else if (toFind[0] == 0)
+			{
+				toFind[0] = getch();
+				if (toFind[0] == 75)	// (arrow left)
+				{
+					if (pointer2->pre != nullptr)
+						pointer2 = pointer2->pre;
+				}
+				else if (toFind[0] == 77)	// (arrow right)
+				{
+					if (pointer2->next != nullptr)
+						pointer2 = pointer2->next;
+				}
+			}
+			else if (toFind[0] == 13)
+			{
+				closegraph(CURRENT_WINDOW);
+				setcurrentwindow(wid);
+				break;
+			}
+			else
+			{
+				add_to_list(head2, tail2, pointer2, toFind[0]);
+			}
+			print_list(head2, tail2, pointer2);
+		}
+	}
+	else
+	{
+		int wid1 = initwindow(300, 200, "Alert!!");
+		char alert1[20] = "Not Allowed!!";
+		outtext(alert1);
+		moveto(0, gety() + 20);
+		char alert2[50] = "Press any key to go back to Text Editor.";
+		outtext(alert2);
+		getch();
+		closegraph(CURRENT_WINDOW);
+		setcurrentwindow(wid);
+	}
+
+
+
+}
+
+void replace_data(node*& head, node*& tail, node*&pointer, node*& head2, node*& tail2, node**& addresses, int& wid, int count,node*&headToFind)
+{
+	node*head3 = nullptr; node*tail3 = nullptr;
+	node*curr = head; node* currf = headToFind;
+	node*curr2 = head2; node*curr3 = head3;
+	while (curr != addresses[0])
+	{
+		add_to_list(head3, tail3, curr3, curr->data);
+		curr = curr->next;
+	}
+	if (count > 1)
+	{
+		for (int a = 1; a < count; a++)
+		{
+			curr2 = head2;
+			while (curr2 != nullptr)
+			{
+				add_to_list(head3, tail3, curr3, curr2->data);
+				curr2 = curr2->next;
+			}
+			currf = headToFind;
+			while (currf != nullptr)
+			{
+				currf = currf->next;
+				curr = curr->next;
+			}
+			while (curr != addresses[a])
+			{
+				add_to_list(head3, tail3, curr3, curr->data);
+				curr = curr->next;
+			}
+		}
+		curr2 = head2;
+		while (curr2 != nullptr)
+		{
+			add_to_list(head3, tail3, curr3, curr2->data);
+			curr2 = curr2->next;
+		}
+		currf = headToFind;
+		while (currf != nullptr)
+		{
+			currf = currf->next;
+			curr = curr->next;
+		}
+		while (curr != nullptr)
+		{
+			add_to_list(head3, tail3, curr3, curr->data);
+			curr = curr->next;
+		}
+	}
+	else
+	{
+		curr2 = head2;
+		while (curr2 != nullptr)
+		{
+			add_to_list(head3, tail3, curr3, curr2->data);
+			curr2 = curr2->next;
+		}
+		currf = headToFind;
+		while (currf != nullptr)
+		{
+			currf = currf->next;
+			curr = curr->next;
+		}
+		while (curr != nullptr)
+		{
+			add_to_list(head3, tail3, curr3, curr->data);
+			curr = curr->next;
+		}
+	}
+
+
+	//deleting:
+	curr = head; node*temp = nullptr;;
+	while (curr != nullptr)
+	{
+		temp = curr;
+		curr = curr->next;
+		delete temp;
+	}
+	temp = nullptr;
+	head = head3; tail = tail3; pointer = tail3;
+}

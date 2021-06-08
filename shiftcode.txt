@@ -1,0 +1,75 @@
+shift = GetAsyncKeyState(VK_SHIFT);
+		
+		if (shift == 1)
+		{
+			shift = getch();
+			ch[0] = shift;
+			
+			
+					ch[0] = getch();
+					if (ch[0] == 77)
+					{
+						shiftcall++;
+						if (shiftcall == 1)
+						{
+							sstart = x;
+                       	       cursor = cursor->next;
+							shiftstart = cursor;
+							shiftend = cursor;
+							ch[0] = cursor->ch;
+							setbkcolor(10);
+							outtext(ch);
+
+						}
+						else
+						{
+							cursor = cursor->next;
+							shiftend = cursor;
+							ch[0] = cursor->ch;
+							setbkcolor(10);
+							outtext(ch);
+						}
+						
+					}
+					else if (ch[0] == 75)
+						{
+						if (cursor != nullptr)
+						{
+							shiftcall++;
+							if (shiftcall == 1)
+							{
+
+								sstart = x;
+								shiftstart = cursor;
+								shiftend = cursor;
+								ch[0] = cursor->ch;
+								setbkcolor(10);
+								int z = x - textwidth(ch);
+								moveto(z, y);
+								outtext(ch);
+								moveto(z, y);
+								cursor = cursor->prev;
+
+							}
+							else
+							{
+
+								shiftend = cursor;
+								ch[0] = cursor->ch;
+								setbkcolor(10);
+								int z = x - textwidth(ch);
+								moveto(z, y);
+								outtext(ch);
+								moveto(z, y);
+								cursor = cursor->prev;
+							}
+
+						}
+							
+
+						}
+			
+
+					cout << "hello";
+
+                }
